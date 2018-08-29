@@ -66,12 +66,12 @@ if [ $build_tarball != "false" ]; then
   rm -rf .tmp/alluxio/* .tmp/temp/kodo/* && \
     cd .tmp/alluxio && \
     ${local_alluxio}/dev/scripts/generate-tarballs single && \
-    tar xf alluxio-1.7.2-SNAPSHOT.tar.gz && \
-    rm alluxio-1.7.2-SNAPSHOT.tar.gz && \
+    tar xf alluxio-1.8.1-SNAPSHOT.tar.gz && \
+    rm alluxio-1.8.1-SNAPSHOT.tar.gz && \
     cd .. && \
-    cp alluxio/alluxio-1.7.2-SNAPSHOT/lib/alluxio-underfs-oss-1.7.2-SNAPSHOT.jar ./temp/ && \
+    cp alluxio/alluxio-1.8.1-SNAPSHOT/lib/alluxio-underfs-oss-1.8.1-SNAPSHOT.jar ./temp/ && \
     cd temp/kodo/ && \
-    jar xf ../alluxio-underfs-oss-1.7.2-SNAPSHOT.jar
+    jar xf ../alluxio-underfs-oss-1.8.1-SNAPSHOT.jar
   cd $DIR/../.. && \
     echo -e "\n\n\n"
 else
@@ -88,11 +88,11 @@ if [ $build_kodo != "false" ]; then
   mvn -DskipTests -Dlicense.skip=true compile install
   rm -rf $DIR/../../.tmp/temp/kodo/com && cp -r target/classes/com $DIR/../../.tmp/temp/kodo/com
   cd $DIR/../../.tmp/temp/kodo && \
-    rm -f alluxio-underfs-oss-1.7.2-SNAPSHOT.jar && \
-    jar -cf alluxio-underfs-oss-1.7.2-SNAPSHOT.jar . && \
-    mv ./alluxio-underfs-oss-1.7.2-SNAPSHOT.jar $DIR/../../.tmp/alluxio/alluxio-1.7.2-SNAPSHOT/lib/ && \
+    rm -f alluxio-underfs-oss-1.8.1-SNAPSHOT.jar && \
+    jar -cf alluxio-underfs-oss-1.8.1-SNAPSHOT.jar . && \
+    mv ./alluxio-underfs-oss-1.8.1-SNAPSHOT.jar $DIR/../../.tmp/alluxio/alluxio-1.8.1-SNAPSHOT/lib/ && \
     cd $DIR/../.. && \
-    cp $DIR/docker-image/kodo-libs/* .tmp/alluxio/alluxio-1.7.2-SNAPSHOT/lib/ && \
+    cp $DIR/docker-image/kodo-libs/* .tmp/alluxio/alluxio-1.8.1-SNAPSHOT/lib/ && \
     echo -e "\n\n\n"
 else
   echo -e "skip building kodo sdk\n\n\n"
