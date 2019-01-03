@@ -2,12 +2,12 @@
 
 ######################################################################
 # master node list:
-# jq39
+# jq90
 ######################################################################
 
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
 export GROUP=juewa
-export NODE_LIST="jq39"
+export NODE_LIST="jq90"
 
 ${DIR}/../template/master.sh "$@"

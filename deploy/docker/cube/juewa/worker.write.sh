@@ -2,12 +2,12 @@
 
 ######################################################################
 # worker node list:
-# jq42
+# jq104 jq107
 ######################################################################
 
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
-export GROUP=video
-export NODE_LIST="jq42"
+export GROUP=juewa
+export NODE_LIST="jq104 jq107"
 
 ${DIR}/../template/worker.write.sh "$@"

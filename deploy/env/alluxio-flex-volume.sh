@@ -1,6 +1,7 @@
 #!/bin/bash
 
 CONFIGURE_LOCK="/opt/alluxio/configure.lock"
+ENDPOINT="iovip.qbox.me"
 
 # shellcheck disable=SC2164
 CUR_DIR=$(cd "$( dirname "$( readlink "$0" || echo "$0" )" )"; pwd)
@@ -142,19 +143,20 @@ flex_volume_mount() {
   acquire_configure "$group"
   if use_kodo "$group"; then
     "${CUR_DIR}"/bin/alluxio fs mount \
+      --option fs.kodo.accesskey="${ak}" \
+      --option fs.kodo.secretkey="${sk}" \
+      --option fs.kodo.endpoint="${ENDPOINT}" \
+      --option fs.kodo.downloadhost="${domain}" \
+      "/$bucket" \
+      "kodo://$bucket"
+  else
+    "${CUR_DIR}"/bin/alluxio fs mount \
       --option fs.oss.accessKeyId="${ak}" \
       --option fs.oss.accessKeySecret="${sk}" \
       --option fs.oss.endpoint="${domain}" \
       --option fs.oss.userId="${uid}" \
       "$alluxio_uid_path/$bucket" \
       "oss://$bucket"
-  else
-    "${CUR_DIR}"/bin/alluxio fs mount \
-      --option fs.kodo.accesskey="${ak}" \
-      --option fs.kodo.secretkey="${sk}" \
-      --option fs.kodo.downloadhost="${domain}" \
-      "/$bucket" \
-      "kodo://$bucket"
   fi
 
   release_configure
