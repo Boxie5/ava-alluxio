@@ -10,6 +10,17 @@ USAGE="${CUR_DIR}/alluxio-flex-volume.sh <command> <options>
     umount <local_path>
 "
 
+use_kodo() {
+  kodo_groups=(juewa)
+  for g in $kodo_groups; do
+    if [[ $i = $g ]]; then
+      return 0
+    fi
+  done
+
+  return 1
+}
+
 print_usage() {
   echo -e "${USAGE}" >&2
   exit 1
@@ -129,18 +140,32 @@ flex_volume_mount() {
 
   # mount bucket in alluxio
   acquire_configure "$group"
-  "${CUR_DIR}"/bin/alluxio fs mount \
-    --option fs.oss.accessKeyId="${ak}" \
-    --option fs.oss.accessKeySecret="${sk}" \
-    --option fs.oss.endpoint="${domain}" \
-    --option fs.oss.userId="${uid}" \
-    "$alluxio_uid_path/$bucket" \
-    "oss://$bucket"
+  if use_kodo "$group"; then
+    "${CUR_DIR}"/bin/alluxio fs mount \
+      --option fs.oss.accessKeyId="${ak}" \
+      --option fs.oss.accessKeySecret="${sk}" \
+      --option fs.oss.endpoint="${domain}" \
+      --option fs.oss.userId="${uid}" \
+      "$alluxio_uid_path/$bucket" \
+      "oss://$bucket"
+  else
+    "${CUR_DIR}"/bin/alluxio fs mount \
+      --option fs.kodo.accesskey="${ak}" \
+      --option fs.kodo.secretkey="${sk}" \
+      --option fs.kodo.downloadhost="${domain}" \
+      "/$bucket" \
+      "kodo://$bucket"
+  fi
+
   release_configure
 
   # mount alluxio path to local path
   acquire_configure "$group"
-  "${CUR_DIR}"/integration/fuse/bin/alluxio-fuse mount "$local_path" "$alluxio_uid_path/$bucket" -o "$mode"
+  if use_kodo "$group"; then
+    "${CUR_DIR}"/integration/fuse/bin/alluxio-fuse mount "$local_path" "/$bucket" -o "$mode"
+  else
+    "${CUR_DIR}"/integration/fuse/bin/alluxio-fuse mount "$local_path" "$alluxio_uid_path/$bucket" -o "$mode"
+  fi
   release_configure
 }
 

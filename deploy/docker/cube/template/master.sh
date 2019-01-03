@@ -22,7 +22,7 @@ if [ "$cmd" = "" ]; then
   echo "usage: ./alluxio.master.sh <cmd> [options]"
   echo "  where cmd should be one of pull/start/restart/remove/status"
   echo "  options:"
-  echo "    pull [tag] default tag will be <hashofalluxio-hashofkodo>"
+  echo "    pull [tag] default tag will be <hashofalluxio>"
   exit 1
 fi
 
@@ -65,7 +65,6 @@ start() {
     -e ALLUXIO_MASTER_STARTUP_BLOCK_INTEGRITY_CHECK_ENABLED=true \
     -e ALLUXIO_MASTER_INODE_CAPACITY=${inode_capacity} \
     -e ALLUXIO_MASTER_INODE_EVICT_RATIO=${inode_evict_ratio} \
-    -e ALLUXIO_CLASSPATH=/opt/alluxio/lib/gson-2.2.4.jar:/opt/alluxio/lib/qiniu-java-sdk-7.2.11.jar:/opt/alluxio/lib/okhttp-3.10.0.jar:/opt/alluxio/lib/okio-1.14.0.jar:/opt/alluxio/lib/jackson-databind-2.9.5.jar:/opt/alluxio/lib/jackson-core-2.9.5.jar:/opt/alluxio/lib/jackson-annotations-2.9.5.jar \
     -e ALLUXIO_ZOOKEEPER_ENABLED=true \
     -e ALLUXIO_ZOOKEEPER_ADDRESS=192.168.213.42:2181,192.168.213.45:2181,192.168.213.46:2181 \
     -e ALLUXIO_ZOOKEEPER_LEADER_PATH=/leader/$GROUP \
@@ -92,8 +91,7 @@ case $cmd in
     tag=$2
     if [ "$tag" = "" ];then
       cd $DIR/../../../../alluxio && alluxio_hash=`git rev-parse --short=7 HEAD` && cd -
-      cd $DIR/../../../../kodo && kodo_hash=`git rev-parse --short=7 HEAD` && cd -
-      tag=$alluxio_hash-$kodo_hash
+      tag=$alluxio_hash
     fi
     docker pull reg-xs.qiniu.io/atlab/alluxio:$tag
     docker tag reg-xs.qiniu.io/atlab/alluxio:$tag alluxio-${GROUP}

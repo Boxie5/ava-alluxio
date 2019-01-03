@@ -28,7 +28,6 @@ fi
 myip=$(getMyIP)
 
 jvm_size=8G
-container_mem_size
 ssd_tier_quota=500GB
 ssd_tier_high=0.1
 ssd_tier_low=0.05
@@ -68,8 +67,6 @@ start() {
     -e ALLUXIO_WORKER_DATA_PORT=${ALLUXIO_WRITE_WORKER_DATA_PORT} \
     -e ALLUXIO_WORKER_WEB_PORT=${ALLUXIO_WRITE_WORKER_WEB_PORT} \
     -e ALLUXIO_WORKER_BLOCK_MASTER_CLIENT_POOL_SIZE=256 \
-    -e KODO_IO_ORIGHOST=${KODO_IO_ORIGHOST} \
-    -e KODO_UP_ORIGHOST=${KODO_UP_ORIGHOST} \
     -e ALLUXIO_WORKER_TIEREDSTORE_LEVELS=1 \
     -e ALLUXIO_WORKER_TIEREDSTORE_LEVEL0_ALIAS=SSD \
     -e ALLUXIO_WORKER_TIEREDSTORE_LEVEL0_DIRS_PATH=/opt/cachedisk \
@@ -106,8 +103,7 @@ case $cmd in
     tag=$2
     if [ "$tag" = "" ];then
       cd $DIR/../../../../alluxio && alluxio_hash=`git rev-parse --short=7 HEAD` && cd -
-      cd $DIR/../../../../kodo && kodo_hash=`git rev-parse --short=7 HEAD` && cd -
-      tag=$alluxio_hash-$kodo_hash
+      tag=$alluxio_hash
     fi
     docker pull reg-xs.qiniu.io/atlab/alluxio:$tag
     docker tag reg-xs.qiniu.io/atlab/alluxio:$tag alluxio-${GROUP}
